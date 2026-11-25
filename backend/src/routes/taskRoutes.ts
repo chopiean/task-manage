@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router } from "express";
 import {
   getTasks,
   getTask,
@@ -6,21 +6,25 @@ import {
   updateTask,
   deleteTask,
   createTaskValidation,
-  updateTaskValidation
-} from '../controllers/taskController.js';
-import { protect } from '../middleware/auth.js';
-import { validate } from '../middleware/validator.js';
+  updateTaskValidation,
+} from "../controllers/taskController.js";
+import { protect } from "../middleware/auth.js";
+import { validate } from "../middleware/validator.js";
+import { apiLimiter } from "../middleware/rateLimiter.js";
 
 const router = Router();
 
 // All routes require authentication
+router.use(apiLimiter);
 router.use(protect);
 
-router.route('/')
+router
+  .route("/")
   .get(getTasks)
   .post(validate(createTaskValidation), createTask);
 
-router.route('/:id')
+router
+  .route("/:id")
   .get(getTask)
   .put(validate(updateTaskValidation), updateTask)
   .delete(deleteTask);
